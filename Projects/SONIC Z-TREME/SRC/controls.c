@@ -1,6 +1,6 @@
 #include "../ZTE/ZTE_DEF.H"
 
-
+extern bool IsZoom;
 
 /**TEMPORARY, WILL ALL BE MOVED ELSEWHERE**/
 

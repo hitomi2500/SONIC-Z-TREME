@@ -24,7 +24,7 @@ void ztReset(player_t *currentPlayer)
     if (currentPlayer->PLAYER_ID==0)
     {
         slPrint("SONIC RINGWORLDS " , slLocate(3,0));
-        slPrint(%DATE% , slLocate(3,20));
+        slPrint(__DATE__ , slLocate(3,20));
         slPrint("LIVES : " , slLocate(0,26));
         //slPrint("¬¢¤²¬£@±*³¼½¾", slLocate(5,1));
         curCam=&cam1;
