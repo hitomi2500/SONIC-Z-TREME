@@ -310,8 +310,12 @@ void buttonsCheck(player_t * currentPlayer, PerDigital * pad)
 
         //else _player->spindash = false;
     }*/
-	if (KEY_PRESS(pad->data, PER_DGT_TY) && (lastPress & PER_DGT_TY))
-		IsZoom = !IsZoom;
+    switch (KEY_PRESS(pad->data, PER_DGT_TY) && (lastPress & PER_DGT_TY))
+    {
+    case true:
+        IsZoom = !IsZoom;
+        break;
+    }
 }
 
 void wireframeDebug(PerDigital * pad)

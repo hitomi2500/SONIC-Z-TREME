@@ -2,6 +2,16 @@
 
 animArray_t animArray[64];
 bool IsZoom;
+int iMoveEnemiesIndex=0;
+double dMoveEnemies[8][2] = 
+{ {0.0,1.0},
+{0.7,0.7},
+{1.0,0.0},
+{0.7,-0.7},
+{0.0,-1.0},
+{-0.7,-0.7},
+{-1.0,0.0},
+{-0.7,0.7}};
 
 void ztResetAllEntities()
 {
@@ -15,6 +25,26 @@ void ztResetAllEntities()
         }
     }
 }
+
+void MoveEnemies()
+{
+    int i, ii;
+	iMoveEnemiesIndex++;
+	iMoveEnemiesIndex %= 512;
+    for (i=0; i<MDATA.TOTAL_NODES; i++)
+    {
+        for (ii=0; ii<nodes[i]->nbEntities; ii++)
+        {
+			if (nodes[i]->entbl[ii].id == 40 || nodes[i]->entbl[ii].id == 41)
+			{
+				nodes[i]->entbl[ii].pos[X] = nodes[i]->entbl[ii].pos[X] + toFIXED(dMoveEnemies[iMoveEnemiesIndex/64][0]);
+				//nodes[i]->entbl[ii].pos[Y] = nodes[i]->entbl[ii].pos[Y] + toFIXED(1.0);
+				nodes[i]->entbl[ii].pos[Z] = nodes[i]->entbl[ii].pos[Z] + toFIXED(dMoveEnemies[iMoveEnemiesIndex/64][1]);
+			}
+        }
+    }
+}
+
 extern Uint8 showDebugStats;
 void ztReset(player_t *currentPlayer)
 {
@@ -24,7 +54,7 @@ void ztReset(player_t *currentPlayer)
     if (currentPlayer->PLAYER_ID==0)
     {
         slPrint("SONIC RINGWORLDS " , slLocate(3,0));
-        slPrint(__DATE__ , slLocate(3,20));
+        slPrint(__DATE__ , slLocate(3,1));
         slPrint("LIVES : " , slLocate(0,26));
         //slPrint("¬¢¤²¬£@±*³¼½¾", slLocate(5,1));
         curCam=&cam1;
@@ -715,7 +745,7 @@ void update_camera(player_t * currentPlayer, camera_t * currentCam)
     currentCam->pos[Y]=currentPlayer->POSITION[Y]-(80<<16);
 	if (true == IsZoom)
     {
-		if (currentCam->camDist < toFIXED(150.0)) currentCam->camDist+= toFIXED(2.0)*ZT_FRAMERATE;
+		if (currentCam->camDist > toFIXED(150.0)) currentCam->camDist-= toFIXED(2.0)*ZT_FRAMERATE;
 	}
 	else
 	{
@@ -746,6 +776,7 @@ void update_physics(player_t * currentPlayer)
     updatePosition(currentPlayer);
     update_camera(currentPlayer, currentCam);
     update_animations(currentPlayer);
+	MoveEnemies();
     if (currentPlayer->INVINCIBLE>0) currentPlayer->INVINCIBLE-=ZT_FRAMERATE;
     if (currentPlayer->INVINCIBLE<0) currentPlayer->INVINCIBLE=0;
 
