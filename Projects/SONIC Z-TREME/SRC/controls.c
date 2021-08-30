@@ -269,7 +269,7 @@ void buttonsCheck(player_t * currentPlayer, PerDigital * pad)
                     currentPlayer->SPEED[Y]=-toFIXED(4.0);
              }
 
-    if (KEY_PRESS(pad->data, PER_DGT_TX) || KEY_PRESS(pad->data, PER_DGT_TY) || KEY_PRESS(pad->data, PER_DGT_TZ))
+    if (KEY_PRESS(pad->data, PER_DGT_TX) || KEY_PRESS(pad->data, PER_DGT_TZ))
         spinCharge(currentPlayer);
     else if (currentPlayer->SPIN_CHARGE != 0 && ((currentPlayer->STATUS & IS_IN_AIR)==0))
     {
@@ -310,6 +310,8 @@ void buttonsCheck(player_t * currentPlayer, PerDigital * pad)
 
         //else _player->spindash = false;
     }*/
+	if (KEY_PRESS(pad->data, PER_DGT_TY) && (lastPress & PER_DGT_TY))
+		IsZoom = !IsZoom;
 }
 
 void wireframeDebug(PerDigital * pad)
@@ -402,12 +404,12 @@ void controls(player_t * currentPlayer, camera_t * currentCamera)
 buttonsCheck(currentPlayer, &pad);
 
 
-    if (currentCamera->targetAngle == currentCamera->camAngle[Y])
+    if (currentCamera->targetAngle == currentCamera->camAngle[Y] || currentCamera->targetAngle == currentCamera->camAngle[Y]/2)
     {
         if (KEY_PRESS(pad.data, PER_DGT_TL))
-            currentCamera->targetAngle += 16384;
+            currentCamera->targetAngle += 8192;
         else if (KEY_PRESS(pad.data, PER_DGT_TR))
-            currentCamera->targetAngle -= 16384;
+            currentCamera->targetAngle -= 8192;
     }
 
     currentPlayer->LAST_INPUTS=pad.data;

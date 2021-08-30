@@ -1,6 +1,7 @@
 #include "../ZTE/ZTE_DEF.H"
 
 animArray_t animArray[64];
+bool IsZoom;
 
 void ztResetAllEntities()
 {
@@ -22,7 +23,8 @@ void ztReset(player_t *currentPlayer)
     camera_t * curCam;
     if (currentPlayer->PLAYER_ID==0)
     {
-        slPrint("SONIC Z-TREME SAGE 2018 DEMO (v.0.0813)" , slLocate(3,0));
+        slPrint("SONIC RINGWORLDS " , slLocate(3,0));
+        slPrint(%DATE% , slLocate(3,20));
         slPrint("LIVES : " , slLocate(0,26));
         //slPrint("¬¢¤²¬£@±*³¼½¾", slLocate(5,1));
         curCam=&cam1;
@@ -71,8 +73,8 @@ void ztReset(player_t *currentPlayer)
     curCam->pos[X]=currentPlayer->POSITION[X];
     curCam->pos[Y]=currentPlayer->POSITION[Y];
     curCam->pos[Z]=currentPlayer->POSITION[Z];
-    curCam->yOffset=-toFIXED(80.0);
-    curCam->camDist=toFIXED(50.0);
+    curCam->yOffset=-toFIXED(20.0);
+    curCam->camDist=toFIXED(0.0);
     curCam->camAngle[X]=0;
     curCam->camAngle[Y]=0;
     curCam->camAngle[Z]=0;
@@ -680,8 +682,8 @@ void updatePosition(player_t * currentPlayer)
 
 */
 
-
-#define MIN_Y (-50<<16)
+bool IsZoom;
+#define MIN_Y (-24<<16)
 #define MAX_Y (-0<<16)
 /*#define camDefaultOffset    (DEGtoANG(24.0))
 #define camMaxOffset        (DEGtoANG(40.0))*/
@@ -711,7 +713,14 @@ void update_camera(player_t * currentPlayer, camera_t * currentCam)
     }
 
     currentCam->pos[Y]=currentPlayer->POSITION[Y]-(80<<16);
-    if (currentCam->camDist < toFIXED(300.0)) currentCam->camDist+= toFIXED(2.0)*ZT_FRAMERATE;
+	if (true == IsZoom)
+    {
+		if (currentCam->camDist < toFIXED(150.0)) currentCam->camDist+= toFIXED(2.0)*ZT_FRAMERATE;
+	}
+	else
+	{
+		if (currentCam->camDist < toFIXED(300.0)) currentCam->camDist+= toFIXED(2.0)*ZT_FRAMERATE;
+    }
 
     currentCam->camAngle[Z]=slAtan(currentCam->camDist, currentPlayer->POSITION[Y]-currentCam->pos[Y]-currentCam->yOffset);
 
