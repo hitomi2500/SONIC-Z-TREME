@@ -104,17 +104,17 @@ void ztInit()
 	slColOffsetBUse(NBG0ON | NBG1ON | NBG2ON | NBG3ON | SPRON | RBG0ON);
     ztFont2NBG3();
     slPriorityNbg3(0);
-    ztLoadVDP2bmp("LOGO", "SEGATA.ZTI", (Uint16*)VDP2_VRAM_A0, 1, bmNBG0);
-    fadeIn();
+    //ztLoadVDP2bmp("LOGO", "SEGATA.ZTI", (Uint16*)VDP2_VRAM_A0, 1, bmNBG0);
+    //fadeIn();
 
     ztInitSound();
     slInitGouraud(gourRealMax, GOUR_REAL_MAX, GRaddr, vwork);
 	slIntFunction(ztVBLANKcustom);
 
     ztLoadPermanentAssets(2);
-    fadeOut(1);
+    //fadeOut(1);
     slPriorityNbg3(7);
-    ztLoadLogo();
+    //ztLoadLogo();
     ztInitTimer(1);
     PLAYER_1.PLAYER_ID=0;
     PLAYER_1.ENTITY_ID=0;
@@ -136,6 +136,8 @@ int main(void)
 {
     /**Init display**/
 	ztInit();
+
+    ztGameLoop(1); //jump to game gright away
 
     Sint32 gameState = 0;
 	while (1)

@@ -57,7 +57,7 @@ void accelerate(player_t * currentPlayer, FIXED acc)
     if (ABS(SinR) < 32768)
         currentPlayer->SPEED[X] -= MIN(ABS(currentPlayer->SPEED[X]), PHYS_TURNING_FRICTION*ZT_FRAMERATE) * (currentPlayer->SPEED[X] > 0 ? 1 : -1);
 
-    if (ABS(CosR) < 32768) //était à < 22000
+    if (ABS(CosR) < 32768) //ï¿½tait ï¿½ < 22000
         currentPlayer->SPEED[Z] -= MIN(ABS(currentPlayer->SPEED[Z]), PHYS_TURNING_FRICTION*ZT_FRAMERATE) * (currentPlayer->SPEED[Z] > 0 ? 1 : -1);
 
 }
@@ -258,10 +258,15 @@ void buttonsCheck(player_t * currentPlayer, PerDigital * pad)
     Uint16 lastPress = currentPlayer->LAST_INPUTS;
     if (((currentPlayer->STATUS & CAN_JUMP) || (currentPlayer->STATUS & DOUBLE_JUMP)) &&
         ((KEY_PRESS(pad->data, PER_DGT_TA) && (lastPress & PER_DGT_TA)) ||
-         (KEY_PRESS(pad->data, PER_DGT_TB) && (lastPress & PER_DGT_TB)) ||
+         //(KEY_PRESS(pad->data, PER_DGT_TB) && (lastPress & PER_DGT_TB)) ||
          (KEY_PRESS(pad->data, PER_DGT_TC) && (lastPress & PER_DGT_TC))))
         jump(currentPlayer);
 
+    else if (KEY_PRESS(pad->data, PER_DGT_TB) && (lastPress & PER_DGT_TB)) 
+        {
+            currentPlayer->SPEED[X] = toFIXED(0.0);
+            currentPlayer->SPEED[Z] = toFIXED(0.0);
+        }
     else if ((pad->data & PER_DGT_TA) && (pad->data & PER_DGT_TB) &&
              (pad->data & PER_DGT_TC) && (currentPlayer->SPEED[Y]<-toFIXED(4.0)))
              {
