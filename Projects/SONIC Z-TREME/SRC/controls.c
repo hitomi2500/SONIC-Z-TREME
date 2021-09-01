@@ -200,11 +200,7 @@ void    jump(player_t * currentPlayer)
 {
     ztPlaySound(SFX_JUMP);
 
-    if (currentPlayer->STATUS&CAN_JUMP)
-        currentPlayer->STATUS |= DOUBLE_JUMP;
-    else
-        currentPlayer->STATUS &= ~DOUBLE_JUMP;
-currentPlayer->STATUS &= ~CAN_JUMP;
+    currentPlayer->STATUS &= ~CAN_JUMP;
 
     currentPlayer->STATUS |= IS_IN_AIR;
     currentPlayer->STATUS |= IS_SPINNING;
@@ -218,6 +214,89 @@ currentPlayer->STATUS &= ~CAN_JUMP;
         slMulFX(currentPlayer->ROTATION[X], divFactor);
     if (currentPlayer->ROTATION[Z] != 0)
         slMulFX(currentPlayer->ROTATION[Z], divFactor);
+
+    /*if (currentPlayer->ROTATION[X] >= DEGtoANG(15.0))       currentPlayer->ROTATION[X] -= DEGtoANG(15.0);
+    else if (currentPlayer->ROTATION[X] <= -DEGtoANG(15.0)) currentPlayer->ROTATION[X] += DEGtoANG(15.0);
+
+    if (currentPlayer->ROTATION[Z] >= DEGtoANG(15.0))       currentPlayer->ROTATION[Z] -= DEGtoANG(15.0);
+    else if (currentPlayer->ROTATION[X] <= -DEGtoANG(15.0)) currentPlayer->ROTATION[X] += DEGtoANG(15.0);
+
+    if (_physics->rotation.rotZ >= 15) _physics->rotation.rotZ -= 15;
+    else if (_physics->rotation.rotZ <= 15) _physics->rotation.rotZ += 15;*/
+
+}
+
+void    homing_attack(player_t * currentPlayer)
+{
+    FIXED Delta, DeltaMin;
+    FIXED dX,dY,dZ;
+    FIXED dX_min,dY_min,dZ_min;
+    FIXED norm,tmp;
+    
+
+    //looking up targets for homing attack
+    DeltaMin = toFIXED(10000.0);
+    for (int i=0; i<MDATA.TOTAL_NODES; i++)
+    {
+        for (int ii=0; ii<nodes[i]->nbEntities; ii++)
+        {
+			if (nodes[i]->entbl[ii].id == 40 || nodes[i]->entbl[ii].id == 41)
+			{
+                dX = slMulFX(nodes[i]->entbl[ii].pos[X] - currentPlayer->POSITION[X],toFIXED(0.01));
+                dY = slMulFX(nodes[i]->entbl[ii].pos[Y] - currentPlayer->POSITION[Y],toFIXED(0.01));
+                dZ = slMulFX(nodes[i]->entbl[ii].pos[Z] - currentPlayer->POSITION[Z],toFIXED(0.01));
+                Delta = slMulFX(dX,dX) + slMulFX(dY,dY) + slMulFX(dZ,dZ); 
+                if (Delta < toFIXED(5.0))
+                {
+                    if (Delta < DeltaMin)
+                    {
+                        DeltaMin = Delta;
+                        dX_min = dX;
+                        dY_min = dY;
+                        dZ_min = dZ;
+                    }
+                }
+			}
+        }
+    }
+
+    if (DeltaMin < toFIXED(10000.0))
+    {
+        //target found, doing homing atttack
+        ztPlaySound(SFX_JUMP);
+        currentPlayer->STATUS &= ~CAN_JUMP;
+        currentPlayer->STATUS |= HOMING;
+        currentPlayer->STATUS |= IS_SPINNING;
+        //normalizing homing speed, using manhattan for now
+        norm = slSquartFX(Delta);
+        tmp = slMulFX(dX_min,toFIXED(30.0));
+        currentPlayer->SPEED[X] = slDivFX(norm,tmp);
+        tmp = slMulFX(dY_min,toFIXED(30.0));
+        currentPlayer->SPEED[Y] = slDivFX(norm,tmp);
+        tmp = slMulFX(dZ_min,toFIXED(30.0));
+        currentPlayer->SPEED[Z] = slDivFX(norm,tmp);
+        slPrintFX(dX_min, slLocate(3, 8));
+        slPrintFX(dY_min, slLocate(13, 8));
+        slPrintFX(dZ_min, slLocate(23, 8));
+        slPrintFX(DeltaMin, slLocate(3, 9));
+    }
+
+    /*ztPlaySound(SFX_JUMP);
+
+    currentPlayer->STATUS &= ~CAN_JUMP;
+
+    currentPlayer->STATUS |= IS_IN_AIR;
+    currentPlayer->STATUS |= IS_SPINNING;
+
+    currentPlayer->SPEED[Y] = -PHYS_JUMP_SPEED_Y;
+    currentPlayer->SPEED[X] += slMulFX(PHYS_JUMP_SPEED_Y, slSin(currentPlayer->ROTATION[Z]));
+    currentPlayer->SPEED[Z] += slMulFX(PHYS_JUMP_SPEED_Y, slSin(currentPlayer->ROTATION[X]));
+
+    FIXED divFactor = 65536 - (ZT_FRAMERATE * toFIXED(0.05));
+    if (currentPlayer->ROTATION[X] != 0)
+        slMulFX(currentPlayer->ROTATION[X], divFactor);
+    if (currentPlayer->ROTATION[Z] != 0)
+        slMulFX(currentPlayer->ROTATION[Z], divFactor);*/
 
     /*if (currentPlayer->ROTATION[X] >= DEGtoANG(15.0))       currentPlayer->ROTATION[X] -= DEGtoANG(15.0);
     else if (currentPlayer->ROTATION[X] <= -DEGtoANG(15.0)) currentPlayer->ROTATION[X] += DEGtoANG(15.0);
@@ -256,23 +335,28 @@ void    spinCharge(player_t * currentPlayer)
 void buttonsCheck(player_t * currentPlayer, PerDigital * pad)
 {
     Uint16 lastPress = currentPlayer->LAST_INPUTS;
-    if (((currentPlayer->STATUS & CAN_JUMP) || (currentPlayer->STATUS & DOUBLE_JUMP)) &&
+    if (((currentPlayer->STATUS & CAN_JUMP) ) &&
         ((KEY_PRESS(pad->data, PER_DGT_TA) && (lastPress & PER_DGT_TA)) ||
          //(KEY_PRESS(pad->data, PER_DGT_TB) && (lastPress & PER_DGT_TB)) ||
          (KEY_PRESS(pad->data, PER_DGT_TC) && (lastPress & PER_DGT_TC))))
         jump(currentPlayer);
+
+    else if (((currentPlayer->STATUS & IS_IN_AIR)/* && (currentPlayer->STATUS & HOMING == 0) */) &&
+        ((KEY_PRESS(pad->data, PER_DGT_TA) && (lastPress & PER_DGT_TA)) ||
+         (KEY_PRESS(pad->data, PER_DGT_TC) && (lastPress & PER_DGT_TC))))
+        homing_attack(currentPlayer);
 
     else if (KEY_PRESS(pad->data, PER_DGT_TB) && (lastPress & PER_DGT_TB)) 
         {
             currentPlayer->SPEED[X] = toFIXED(0.0);
             currentPlayer->SPEED[Z] = toFIXED(0.0);
         }
-    else if ((pad->data & PER_DGT_TA) && (pad->data & PER_DGT_TB) &&
+    /*else if ((pad->data & PER_DGT_TA) && (pad->data & PER_DGT_TB) &&
              (pad->data & PER_DGT_TC) && (currentPlayer->SPEED[Y]<-toFIXED(4.0)))
              {
                  if ((KEY_PRESS(lastPress, PER_DGT_TA) || KEY_PRESS(lastPress, PER_DGT_TB) || KEY_PRESS(lastPress, PER_DGT_TC))&&(currentPlayer->STATUS&DOUBLE_JUMP))
                     currentPlayer->SPEED[Y]=-toFIXED(4.0);
-             }
+             }*/ //what's this, double jump acceleration?
 
     if (KEY_PRESS(pad->data, PER_DGT_TX) || KEY_PRESS(pad->data, PER_DGT_TZ))
         spinCharge(currentPlayer);

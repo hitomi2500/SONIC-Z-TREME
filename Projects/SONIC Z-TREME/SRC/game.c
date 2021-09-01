@@ -56,7 +56,7 @@ void ztReset(player_t *currentPlayer)
         slPrint("SONIC RINGWORLDS " , slLocate(3,0));
         slPrint(__DATE__ , slLocate(3,1));
         slPrint("LIVES : " , slLocate(0,26));
-        //slPrint("¬¢¤²¬£@±*³¼½¾", slLocate(5,1));
+        //slPrint("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½*ï¿½ï¿½ï¿½ï¿½", slLocate(5,1));
         curCam=&cam1;
         TIMER=0;
         /*slPrint("RINGS : ", slLocate(0,4));
@@ -94,7 +94,7 @@ void ztReset(player_t *currentPlayer)
 
     currentPlayer->ROTATION[X] = DEGtoANG(0.0);
     currentPlayer->ROTATION[Z] = DEGtoANG(0.0);
-    currentPlayer->STATUS = DOUBLE_JUMP | CAN_JUMP;
+    currentPlayer->STATUS = CAN_JUMP;
     currentPlayer->INVINCIBLE=60*3;
     currentPlayer->OWNED = 0;
     currentPlayer->COLOR=0;
@@ -308,13 +308,13 @@ FIXED attributebehavior(player_t * currentPlayer, VECTOR planeNorm, FIXED dist, 
         case 21:
             ztPlaySound(SFX_MUSHR);
             currentPlayer->SPEED[Y] = SPRING_JUMP;
-            currentPlayer->STATUS &= ~CAN_JUMP & ~V_COLLISION; currentPlayer->STATUS |= IS_IN_AIR | DOUBLE_JUMP;
+            currentPlayer->STATUS &= ~CAN_JUMP & ~V_COLLISION; currentPlayer->STATUS |= IS_IN_AIR;
             return 1;
         case 22:
             ztPlaySound(SFX_MUSHR);
             if (currentPlayer->SPEED[Y]>MUSHR_BOUNCE) currentPlayer->SPEED[Y]=-currentPlayer->SPEED[Y];
             else  currentPlayer->SPEED[Y]=-MUSHR_BOUNCE;
-            currentPlayer->STATUS &= ~CAN_JUMP & ~V_COLLISION; currentPlayer->STATUS |= IS_IN_AIR | DOUBLE_JUMP;
+            currentPlayer->STATUS &= ~CAN_JUMP & ~V_COLLISION; currentPlayer->STATUS |= IS_IN_AIR;
             return 1;
         case 25:
             //ztPlaySound(SFX_ROLL);
@@ -394,14 +394,14 @@ else if (passedAttr == 21 || passedAttr == 20)
     if (passedAttr==21)ztPlaySound(SFX_MUSHR);
     else ztPlaySound(SFX_SPRING);
     currentPlayer->SPEED[Y] = SPRING_JUMP;
-    currentPlayer->STATUS &= ~CAN_JUMP & ~V_COLLISION; currentPlayer->STATUS |= IS_IN_AIR | DOUBLE_JUMP;
+    currentPlayer->STATUS &= ~CAN_JUMP & ~V_COLLISION; currentPlayer->STATUS |= IS_IN_AIR ;
     return 1;}
 else if (passedAttr == 22)
 {
     ztPlaySound(SFX_MUSHR);
     if (currentPlayer->SPEED[Y]>toFIXED(6.8)) currentPlayer->SPEED[Y]=-currentPlayer->SPEED[Y];
     else  currentPlayer->SPEED[Y]=-toFIXED(6.8);
-    currentPlayer->STATUS &= ~CAN_JUMP & ~V_COLLISION; currentPlayer->STATUS |= IS_IN_AIR | DOUBLE_JUMP;
+    currentPlayer->STATUS &= ~CAN_JUMP & ~V_COLLISION; currentPlayer->STATUS |= IS_IN_AIR ;
     return 1;
 }
 else if (passedAttr == 99 || passedAttr == 98)
@@ -644,6 +644,7 @@ void updatePosition(player_t * currentPlayer)
         //currentPlayer->SPEED[Y]=0;
         currentPlayer->STATUS &= ~IS_IN_AIR;
         currentPlayer->STATUS &= ~IS_SPINNING;
+        currentPlayer->STATUS &= ~HOMING;
         currentPlayer->STATUS |= CAN_JUMP;
     }
     else if (currentPlayer->POSITION[Y]+currentPlayer->SPEED[Y] > toFIXED(1200.0))
@@ -682,8 +683,9 @@ void updatePosition(player_t * currentPlayer)
                 currentPlayer->ROTATION[Z]=0;
         }
         if (currentPlayer->SPEED[Y] > toFIXED(6.5))
-            {if (currentPlayer->STATUS&CAN_JUMP)currentPlayer->STATUS |= DOUBLE_JUMP;
-            currentPlayer->STATUS &= ~CAN_JUMP; currentPlayer->STATUS |= IS_SPINNING;}
+            {
+            currentPlayer->STATUS &= ~CAN_JUMP; currentPlayer->STATUS |= IS_SPINNING;
+            }
     }
     selectAnim(currentPlayer);
         //generateParticles(currentPlayer, currentPlayer->SPIN_ANGLE, 1);

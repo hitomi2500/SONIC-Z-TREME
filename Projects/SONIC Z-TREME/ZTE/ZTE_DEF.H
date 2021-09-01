@@ -246,7 +246,7 @@ typedef enum
     H_COLLISION = 1 << 0,
     V_COLLISION = 1 << 1,
     CAN_JUMP    = 1 << 2,
-    DOUBLE_JUMP = 1 << 3,
+    HOMING      = 1 << 3,
     IS_IN_AIR   = 1 << 4,
     IS_MOVING   = 1 << 5,
     IS_SHOOTING = 1 << 6,

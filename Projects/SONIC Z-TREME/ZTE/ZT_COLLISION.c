@@ -23,6 +23,7 @@ void groundCollision(player_t * currentPlayer, VECTOR planeNorm, FIXED dist, FIX
         currentPlayer->ROTATION[Z]=slAtan(-planeNorm[Y],planeNorm[X]);
         currentPlayer->ROTATION[X]=slAtan(-planeNorm[Y], planeNorm[Z]);
         currentPlayer->STATUS |= CAN_JUMP;
+        currentPlayer->STATUS &= ~HOMING;
 
 /***AJOUT SAGE***/
         if (currentPlayer->SPEED[Y] > toFIXED(3.0))
