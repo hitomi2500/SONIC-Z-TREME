@@ -240,7 +240,7 @@ void    homing_attack(player_t * currentPlayer)
     {
         for (int ii=0; ii<nodes[i]->nbEntities; ii++)
         {
-			if (nodes[i]->entbl[ii].id == 40 || nodes[i]->entbl[ii].id == 41)
+			if ( (nodes[i]->entbl[ii].id == 40 || nodes[i]->entbl[ii].id == 41) && (nodes[i]->entbl[ii].status != 0) )
 			{
                 dX = slMulFX(nodes[i]->entbl[ii].pos[X] - currentPlayer->POSITION[X],toFIXED(0.01));
                 dY = slMulFX(nodes[i]->entbl[ii].pos[Y] - currentPlayer->POSITION[Y],toFIXED(0.01));
@@ -275,13 +275,26 @@ void    homing_attack(player_t * currentPlayer)
         currentPlayer->SPEED[Y] = slDivFX(norm,tmp);
         tmp = slMulFX(dZ_min,toFIXED(30.0));
         currentPlayer->SPEED[Z] = slDivFX(norm,tmp);
-        slPrintFX(dX_min, slLocate(3, 8));
+        /*slPrintFX(dX_min, slLocate(3, 8));
         slPrintFX(dY_min, slLocate(13, 8));
         slPrintFX(dZ_min, slLocate(23, 8));
-        slPrintFX(DeltaMin, slLocate(3, 9));
+        slPrintFX(DeltaMin, slLocate(3, 9));*/
+    }
+    else{
+        //target not found, doing "go ahead" homing atttack
+        ztPlaySound(SFX_JUMP);
+        currentPlayer->STATUS &= ~CAN_JUMP;
+        currentPlayer->STATUS |= HOMING;
+        currentPlayer->STATUS |= IS_SPINNING;
+        //normalizing homing speed, using manhattan for now
+        //currentPlayer->SPEED[X] *= 2;
+        //currentPlayer->SPEED[Z] *= 2;
+        currentPlayer->SPEED[X] += slMulFX(toFIXED(4.0), slSin(currentPlayer->ROTATION[Y]));
+        currentPlayer->SPEED[Z] += slMulFX(toFIXED(4.0), slCos(currentPlayer->ROTATION[Y]));
+        //y speed unchanged
     }
 
-    /*ztPlaySound(SFX_JUMP);
+    /*
 
     currentPlayer->STATUS &= ~CAN_JUMP;
 

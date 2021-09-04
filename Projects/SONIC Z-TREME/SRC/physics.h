@@ -9,7 +9,7 @@
 #define PHYS_NORMAL_FRICTION (toFIXED(0.5))
 #define PHYS_TURNING_FRICTION  (toFIXED(0.75))
 #define PHYS_ROLLING_FRICTION  (toFIXED(0.1))
-#define PHYS_JUMP_SPEED_Y (toFIXED(6.85)) //was 6.7
+#define PHYS_JUMP_SPEED_Y (toFIXED(8.0)) //was 6.7
 #define PHYS_MAX_SPEED_Y (toFIXED(16.0)) //was 16
 #define PHYS_BRAKING_SPEED (toFIXED(4.5))
 #define PHYS_GRAVITY (toFIXED(0.225)) //was 0.21875
