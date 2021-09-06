@@ -29,6 +29,19 @@ SPR_ATTR sprites[]=
 
     SPR_ATTRIBUTE(28, LUTidx(28), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | (1<<11) | MESHon | Window_In ,  sprNoflip | _ZmCC ),
     SPR_ATTRIBUTE(17, LUTidx(17), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | (1<<11) | MESHon | Window_In ,  sprNoflip | _ZmCC ),
+	
+    SPR_ATTRIBUTE(30, LUTidx(30), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | MESHoff | Window_In ,  sprNoflip | _ZmCC ),
+    SPR_ATTRIBUTE(31, LUTidx(31), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | MESHoff | Window_In ,  sprNoflip | _ZmCC ),
+    SPR_ATTRIBUTE(32, LUTidx(32), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | MESHoff | Window_In ,  sprNoflip | _ZmCC ),
+    SPR_ATTRIBUTE(33, LUTidx(33), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | MESHoff | Window_In ,  sprNoflip | _ZmCC ),
+    SPR_ATTRIBUTE(34, LUTidx(34), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | MESHoff | Window_In ,  sprNoflip | _ZmCC ),
+    SPR_ATTRIBUTE(35, LUTidx(35), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | MESHoff | Window_In ,  sprNoflip | _ZmCC ),
+    SPR_ATTRIBUTE(36, LUTidx(36), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | MESHoff | Window_In ,  sprNoflip | _ZmCC ),
+    SPR_ATTRIBUTE(37, LUTidx(37), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | MESHoff | Window_In ,  sprNoflip | _ZmCC ),
+    SPR_ATTRIBUTE(38, LUTidx(38), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | MESHoff | Window_In ,  sprNoflip | _ZmCC ),
+    SPR_ATTRIBUTE(39, LUTidx(39), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | MESHoff | Window_In ,  sprNoflip | _ZmCC ),
+    SPR_ATTRIBUTE(40, LUTidx(40), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | MESHoff | Window_In ,  sprNoflip | _ZmCC ),
+    SPR_ATTRIBUTE(41, LUTidx(41), No_Gouraud, CL16Look | ECdis | SPenb | HSSon | MESHoff | Window_In ,  sprNoflip | _ZmCC ),
 };
 
 

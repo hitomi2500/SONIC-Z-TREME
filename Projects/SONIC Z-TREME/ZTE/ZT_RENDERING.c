@@ -397,6 +397,26 @@ void displaySpriteEnt(octree_node_t * curNode, FIXED dist)
         }
         *curEnt++;
     }
+    /*FIXED   _tmp_pos[XYZS];
+    _tmp_pos[X]=toFIXED(-80.0);
+    _tmp_pos[Y]=toFIXED(0.0);
+    _tmp_pos[Z]=toFIXED(-80.0);
+    _tmp_pos[S]=toFIXED(0.0);
+    Uint8 _rings = 35;//currentPlayer->OWNED;
+    if (_rings > 99)
+    {
+       //ztPutSprite(spriteAnim+20,curEnt->pos[X],curEnt->pos[Y],curEnt->pos[Z], toFIXED(ORIGINAL),0, 0);
+        slPutSprite(_tmp_pos, &sprites[40+_rings/100] , 0);
+        _rings = _rings % 100;
+        _tmp_pos[X] = _tmp_pos[X] + 8;
+    }
+    if (_rings > 99)
+    {
+        slPutSprite(_tmp_pos, &sprites[40+_rings/10] , 0);
+        _rings = _rings % 10;
+        _tmp_pos[X] = _tmp_pos[X] + 8;
+    }
+    slPutSprite(_tmp_pos, &sprites[40+_rings] , 0);*/
 }
 
 

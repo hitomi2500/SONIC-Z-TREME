@@ -251,6 +251,17 @@ void ztLoadPermanentAssets(Uint32 nbPlayers)
 
         ztLoadTexture((Sint8*)"BSTAR.ZTI", ptr);
         //ztLoadTexture((Sint8*)"SBALL.ZTI", ptr);
+        ztLoadTexture((Sint8*)"DIGIT0.ZTI", ptr);
+        ztLoadTexture((Sint8*)"DIGIT1.ZTI", ptr);
+        ztLoadTexture((Sint8*)"DIGIT2.ZTI", ptr);
+        ztLoadTexture((Sint8*)"DIGIT3.ZTI", ptr);
+        ztLoadTexture((Sint8*)"DIGIT4.ZTI", ptr);
+        ztLoadTexture((Sint8*)"DIGIT5.ZTI", ptr);
+        ztLoadTexture((Sint8*)"DIGIT6.ZTI", ptr);
+        ztLoadTexture((Sint8*)"DIGIT7.ZTI", ptr);
+        ztLoadTexture((Sint8*)"DIGIT8.ZTI", ptr);
+        ztLoadTexture((Sint8*)"DIGIT9.ZTI", ptr);
+        ztLoadTexture((Sint8*)"DIGITCLN.ZTI", ptr);
     }
     ztCDsetRoot();
 
