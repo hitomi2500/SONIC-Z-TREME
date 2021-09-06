@@ -1,7 +1,7 @@
 #include "../ZTE/ZTE_DEF.H"
 
 animArray_t animArray[64];
-bool IsZoom;
+bool IsZoom=false;
 int iMoveEnemiesIndex=0;
 double dMoveEnemies[8][2] = 
 { {0.0,1.0},
@@ -77,6 +77,8 @@ void ztReset(player_t *currentPlayer)
        // #endif
     }
     else curCam=&cam2;
+
+    IsZoom=false;
 
 	currentPlayer->SPEED[X] = toFIXED(0.0);
 	currentPlayer->SPEED[Y] = toFIXED(0.0);
