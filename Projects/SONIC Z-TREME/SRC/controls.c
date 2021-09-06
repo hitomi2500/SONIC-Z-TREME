@@ -348,16 +348,19 @@ void    spinCharge(player_t * currentPlayer)
 void buttonsCheck(player_t * currentPlayer, PerDigital * pad)
 {
     Uint16 lastPress = currentPlayer->LAST_INPUTS;
+
     if (((currentPlayer->STATUS & CAN_JUMP) ) &&
         ((KEY_PRESS(pad->data, PER_DGT_TA) && (lastPress & PER_DGT_TA)) ||
          //(KEY_PRESS(pad->data, PER_DGT_TB) && (lastPress & PER_DGT_TB)) ||
          (KEY_PRESS(pad->data, PER_DGT_TC) && (lastPress & PER_DGT_TC))))
         jump(currentPlayer);
 
-    else if (((currentPlayer->STATUS & IS_IN_AIR)/* && (currentPlayer->STATUS & HOMING == 0) */) &&
+    else if (((currentPlayer->STATUS & IS_IN_AIR) && (toFIXED(currentPlayer->STATUS & HOMING) < toFIXED(1.0))) &&
         ((KEY_PRESS(pad->data, PER_DGT_TA) && (lastPress & PER_DGT_TA)) ||
          (KEY_PRESS(pad->data, PER_DGT_TC) && (lastPress & PER_DGT_TC))))
-        homing_attack(currentPlayer);
+         {
+            homing_attack(currentPlayer);
+         }
 
     else if (KEY_PRESS(pad->data, PER_DGT_TB) && (lastPress & PER_DGT_TB)) 
         {
