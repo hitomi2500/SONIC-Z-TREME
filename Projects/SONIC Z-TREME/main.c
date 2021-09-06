@@ -47,6 +47,7 @@ int _sclib_4d_pclink_use;
 unsigned char * PVS;
 /**END**/
 
+#define ENABLE_LOGOS
 
 void ztInit()
 {
@@ -104,17 +105,23 @@ void ztInit()
 	slColOffsetBUse(NBG0ON | NBG1ON | NBG2ON | NBG3ON | SPRON | RBG0ON);
     ztFont2NBG3();
     slPriorityNbg3(0);
-    //ztLoadVDP2bmp("LOGO", "SEGATA.ZTI", (Uint16*)VDP2_VRAM_A0, 1, bmNBG0);
-    //fadeIn();
+#ifdef ENABLE_LOGOS
+    ztLoadVDP2bmp("LOGO", "SEGATA.ZTI", (Uint16*)VDP2_VRAM_A0, 1, bmNBG0);
+    fadeIn();
+#endif
 
     ztInitSound();
     slInitGouraud(gourRealMax, GOUR_REAL_MAX, GRaddr, vwork);
 	slIntFunction(ztVBLANKcustom);
 
     ztLoadPermanentAssets(2);
-    //fadeOut(1);
+#ifdef ENABLE_LOGOS
+    fadeOut(1);
+#endif
     slPriorityNbg3(7);
-    //ztLoadLogo();
+#ifdef ENABLE_LOGOS
+    ztLoadLogo();
+#endif
     ztInitTimer(1);
     PLAYER_1.PLAYER_ID=0;
     PLAYER_1.ENTITY_ID=0;
@@ -137,7 +144,9 @@ int main(void)
     /**Init display**/
 	ztInit();
 
-    ztGameLoop(1); //jump to game gright away
+#ifndef ENABLE_LOGOS
+    ztGameLoop(1); //jump to game right away
+#endif
 
     Sint32 gameState = 0;
 	while (1)
