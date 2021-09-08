@@ -147,9 +147,6 @@ void draw_stats(player_t * currentPlayer)
 {
     //if (currentPlayer->PLAYER_ID != 0 ) return;
     Uint32 curTime = TIMER>>6;
-    slPrintHex(slHex2Dec(currentPlayer->OWNED), slLocate (3,3));
-    slPrintHex(slHex2Dec(curTime), slLocate(3, 6));
-    slPrintHex(slHex2Dec(currentPlayer->LIVES), slLocate(8,26));
 
     #ifdef USE_TRANSP_BUFFER
 /*
@@ -397,26 +394,6 @@ void displaySpriteEnt(octree_node_t * curNode, FIXED dist)
         }
         *curEnt++;
     }
-    /*FIXED   _tmp_pos[XYZS];
-    _tmp_pos[X]=toFIXED(-80.0);
-    _tmp_pos[Y]=toFIXED(0.0);
-    _tmp_pos[Z]=toFIXED(-80.0);
-    _tmp_pos[S]=toFIXED(0.0);
-    Uint8 _rings = 35;//currentPlayer->OWNED;
-    if (_rings > 99)
-    {
-       //ztPutSprite(spriteAnim+20,curEnt->pos[X],curEnt->pos[Y],curEnt->pos[Z], toFIXED(ORIGINAL),0, 0);
-        slPutSprite(_tmp_pos, &sprites[40+_rings/100] , 0);
-        _rings = _rings % 100;
-        _tmp_pos[X] = _tmp_pos[X] + 8;
-    }
-    if (_rings > 99)
-    {
-        slPutSprite(_tmp_pos, &sprites[40+_rings/10] , 0);
-        _rings = _rings % 10;
-        _tmp_pos[X] = _tmp_pos[X] + 8;
-    }
-    slPutSprite(_tmp_pos, &sprites[40+_rings] , 0);*/
 }
 
 
@@ -754,6 +731,51 @@ void			ztRender(player_t * currentPlayer, camera_t * currentCamera, Uint32 nbPla
             {
                 ztSetNormalSprite(18, -170, -92, toFIXED(30.0));
                 ztSetNormalSprite(19, -170, -70, toFIXED(30.0));
+                //display rings
+                Uint8 _rings = currentPlayer->OWNED;
+                if (_rings > 999) _rings = 999;
+                int _tmp_pos_x = -130;
+                if (_rings > 99)
+                {
+                    ztSetNormalSprite(29+_rings/100, _tmp_pos_x, -86, toFIXED(30.0));
+                    _rings = _rings % 100;
+                    _tmp_pos_x = _tmp_pos_x + 8;
+                }
+                if (_rings > 9)
+                {
+                    ztSetNormalSprite(29+_rings/10, _tmp_pos_x, -86, toFIXED(30.0));
+                    _rings = _rings % 10;
+                    _tmp_pos_x = _tmp_pos_x + 8;
+                }
+                ztSetNormalSprite(29+_rings, _tmp_pos_x, -86, toFIXED(30.0));
+                //display time
+                Uint16 _time = TIMER>>6;
+                if (_time > 999) _time = 999;
+                _tmp_pos_x = -130;
+                if (_time > 99)
+                {
+                    ztSetNormalSprite(29+_time/100, _tmp_pos_x, -64, toFIXED(30.0));
+                    _time = _time % 100;
+                    _tmp_pos_x = _tmp_pos_x + 8;
+                }
+                if (_time > 9)
+                {
+                    ztSetNormalSprite(29+_time/10, _tmp_pos_x, -64, toFIXED(30.0));
+                    _time = _time % 10;
+                    _tmp_pos_x = _tmp_pos_x + 8;
+                }
+                ztSetNormalSprite(29+_time, _tmp_pos_x, -64, toFIXED(30.0));                
+                //display lives
+                Uint8 _lives = currentPlayer->LIVES;
+                if (_lives > 99) _lives = 99;
+                _tmp_pos_x = -120;
+                if (_lives > 9)
+                {
+                    ztSetNormalSprite(29+_lives/10, _tmp_pos_x, 96, toFIXED(30.0));
+                    _lives = _lives % 10;
+                    _tmp_pos_x = _tmp_pos_x + 8;
+                }
+                ztSetNormalSprite(29+_lives, _tmp_pos_x, 96, toFIXED(30.0));     
             }
         else
             {
