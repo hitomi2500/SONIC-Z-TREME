@@ -104,7 +104,7 @@ void ztReset(player_t *currentPlayer)
     currentPlayer->SPIN_CHARGE=0;
     curCam->pos[X]=currentPlayer->POSITION[X];
     curCam->pos[Y]=currentPlayer->POSITION[Y];
-    curCam->pos[Z]=currentPlayer->POSITION[Z];
+    curCam->pos[Z]=currentPlayer->POSITION[Z]-toFIXED(80.0);
     curCam->yOffset=-toFIXED(20.0);
     curCam->camDist=toFIXED(0.0);
     curCam->camAngle[X]=0;
@@ -126,6 +126,8 @@ char * ztMapNameLookUp(int lvl)
 
 
         if (mapId==1) filename = "JADE1.ZTM";
+        //if (mapId==1) filename = "TEST5.ZTM";
+        //if (mapId==1) filename = "TEST02.ZTM";
         else if (mapId==2) filename = "RED.ZTM";//"CRYST2.ZTM";
         //else if (mapId==3) filename = "GALAXY.ZTM";
         else if (mapId==3) filename = "TEST5.ZTM";
@@ -734,8 +736,9 @@ bool IsZoom;
 #define camMaxOffset        (DEGtoANG(40.0))*/
 void update_camera(player_t * currentPlayer, camera_t * currentCam)
 {
+    FIXED _limit;
 
-    ANGLE dif = currentCam->targetAngle - currentCam->camAngle[Y];
+    /*ANGLE dif = currentCam->targetAngle - currentCam->camAngle[Y];
     if (dif > DEGtoANG(5.5))
         currentCam->camAngle[Y] += 540*ZT_FRAMERATE;
     else if (dif < -DEGtoANG(5.5))
@@ -755,25 +758,44 @@ void update_camera(player_t * currentPlayer, camera_t * currentCam)
             currentCam->yOffset-=ZT_FRAMERATE<<17;
         else
             currentCam->yOffset+=ZT_FRAMERATE<<17;
-    }
+    }*/
 
     currentCam->pos[Y]=currentPlayer->POSITION[Y]-(80<<16);
 	if (true == IsZoom)
     {
-		if (currentCam->camDist > toFIXED(150.0)) currentCam->camDist-= toFIXED(2.0)*ZT_FRAMERATE;
+		//if (currentCam->camDist > toFIXED(150.0)) currentCam->camDist-= toFIXED(2.0)*ZT_FRAMERATE;
+        _limit = toFIXED(1406.25);
 	}
 	else
 	{
-		if (currentCam->camDist < toFIXED(300.0)) currentCam->camDist+= toFIXED(2.0)*ZT_FRAMERATE;
+		//if (currentCam->camDist < toFIXED(300.0)) currentCam->camDist+= toFIXED(2.0)*ZT_FRAMERATE;
+        _limit = toFIXED(5625.0);
     }
 
-    currentCam->camAngle[Z]=slAtan(currentCam->camDist, currentPlayer->POSITION[Y]-currentCam->pos[Y]-currentCam->yOffset);
+    //currentCam->camAngle[Z]=slAtan(currentCam->camDist, currentPlayer->POSITION[Y]-currentCam->pos[Y]-currentCam->yOffset);
 
-    currentCam->pos[X]= currentPlayer->POSITION[X] - slMulFX(slMulFX(slCos(currentCam->camAngle[Z]),
+    /*currentCam->pos[X]= currentPlayer->POSITION[X] - slMulFX(slMulFX(slCos(currentCam->camAngle[Z]),
                                                                      slSin(currentCam->camAngle[Y])), currentCam->camDist);
     currentCam->pos[Z]= currentPlayer->POSITION[Z] - slMulFX(slMulFX(slCos(currentCam->camAngle[Z]),
-                                                                     slCos(currentCam->camAngle[Y])), currentCam->camDist);
+                                                                     slCos(currentCam->camAngle[Y])), currentCam->camDist);*/
+    
+    //follow camera, calculating real dist
+    FIXED dist_x = (currentCam->pos[X] - currentPlayer->POSITION[X]) >> 2;
+    FIXED dist_xz = slMulFX(dist_x,dist_x);
+    FIXED dist_z = (currentCam->pos[Z] - currentPlayer->POSITION[Z]) >> 2;
+    dist_xz = dist_xz + slMulFX(dist_z,dist_z);
+    currentCam->camDist = dist_xz;
+    if (dist_xz > _limit)
+    {
+        //camera gone too far, moving closer
+        currentCam->pos[X] -= dist_x>>4;
+        currentCam->pos[Z] -= dist_z>>4;
+    }
 
+    //now rotate camera accordingly
+    currentCam->camAngle[X]=0; //tangage should be zero
+    currentCam->camAngle[Y]=slAtan(-dist_z, -dist_x);//slAtan(currentCam->camDist, currentPlayer->POSITION[Y]-currentCam->pos[Y]);
+    currentCam->camAngle[Z]=slAtan(slSquartFX(dist_xz)*4,currentPlayer->POSITION[Y]-currentCam->pos[Y]);
 
 }
 
