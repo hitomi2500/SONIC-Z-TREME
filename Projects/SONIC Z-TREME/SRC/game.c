@@ -110,7 +110,7 @@ void ztReset(player_t *currentPlayer)
     curCam->camAngle[X]=0;
     curCam->camAngle[Y]=0;
     curCam->camAngle[Z]=0;
-    curCam->targetAngle=curCam->camAngle[Y];
+    curCam->rotation=0;
     update_camera(currentPlayer, curCam);
 
 
@@ -764,12 +764,12 @@ void update_camera(player_t * currentPlayer, camera_t * currentCam)
 	if (true == IsZoom)
     {
 		//if (currentCam->camDist > toFIXED(150.0)) currentCam->camDist-= toFIXED(2.0)*ZT_FRAMERATE;
-        _limit = toFIXED(1406.25);
+        _limit = toFIXED(800);//1406.25);
 	}
 	else
 	{
 		//if (currentCam->camDist < toFIXED(300.0)) currentCam->camDist+= toFIXED(2.0)*ZT_FRAMERATE;
-        _limit = toFIXED(5625.0);
+        _limit = toFIXED(2000);//5625.0);
     }
 
     //currentCam->camAngle[Z]=slAtan(currentCam->camDist, currentPlayer->POSITION[Y]-currentCam->pos[Y]-currentCam->yOffset);
@@ -788,8 +788,39 @@ void update_camera(player_t * currentPlayer, camera_t * currentCam)
     if (dist_xz > _limit)
     {
         //camera gone too far, moving closer
-        currentCam->pos[X] -= dist_x>>4;
-        currentCam->pos[Z] -= dist_z>>4;
+        currentCam->pos[X] -= dist_x>>2;
+        currentCam->pos[Z] -= dist_z>>2;
+    }
+
+    //if rotation is active, rotate camera as well
+    //rotating by 10 degrees per keypress. sin(10deg) = 0.1736, cos(10deg) = 0.9848 
+    FIXED rot_x1,rot_z1;
+    FIXED rot_x2,rot_z2;
+    if (currentCam->rotation == 1)
+    {
+        rot_x1 = (currentCam->pos[X] - currentPlayer->POSITION[X]);
+        rot_z1 = (currentCam->pos[Z] - currentPlayer->POSITION[Z]);
+        rot_x2 = slMulFX(toFIXED(0.9848),rot_x1) - slMulFX(toFIXED(0.1736),rot_z1);
+        rot_z2 = slMulFX(toFIXED(0.1736),rot_x1) + slMulFX(toFIXED(0.9848),rot_z1);
+        currentCam->pos[X] = rot_x2 + currentPlayer->POSITION[X];
+        currentCam->pos[Z] = rot_z2 + currentPlayer->POSITION[Z];
+        dist_x = (currentCam->pos[X] - currentPlayer->POSITION[X]) >> 2;
+        dist_xz = slMulFX(dist_x,dist_x);
+        dist_z = (currentCam->pos[Z] - currentPlayer->POSITION[Z]) >> 2;
+        dist_xz = dist_xz + slMulFX(dist_z,dist_z);
+    }
+    else if (currentCam->rotation == -1)
+    {
+        rot_x1 = (currentCam->pos[X] - currentPlayer->POSITION[X]);
+        rot_z1 = (currentCam->pos[Z] - currentPlayer->POSITION[Z]);
+        rot_x2 = slMulFX(toFIXED(0.9848),rot_x1) - slMulFX(toFIXED(-0.1736),rot_z1);
+        rot_z2 = slMulFX(toFIXED(-0.1736),rot_x1) + slMulFX(toFIXED(0.9848),rot_z1);
+        currentCam->pos[X] = rot_x2 + currentPlayer->POSITION[X];
+        currentCam->pos[Z] = rot_z2 + currentPlayer->POSITION[Z];
+        dist_x = (currentCam->pos[X] - currentPlayer->POSITION[X]) >> 2;
+        dist_xz = slMulFX(dist_x,dist_x);
+        dist_z = (currentCam->pos[Z] - currentPlayer->POSITION[Z]) >> 2;
+        dist_xz = dist_xz + slMulFX(dist_z,dist_z);
     }
 
     //now rotate camera accordingly

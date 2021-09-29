@@ -306,7 +306,7 @@ typedef struct
     FIXED yOffset;
     FIXED camDist;
     ANGLE camAngle[XYZ];
-    ANGLE targetAngle;
+    Sint8 rotation;
 } camera_t;
 
 

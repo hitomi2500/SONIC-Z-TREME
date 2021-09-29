@@ -513,13 +513,12 @@ void controls(player_t * currentPlayer, camera_t * currentCamera)
 buttonsCheck(currentPlayer, &pad);
 
 
-    if (currentCamera->targetAngle == currentCamera->camAngle[Y] || currentCamera->targetAngle == currentCamera->camAngle[Y]/2)
-    {
-        if (KEY_PRESS(pad.data, PER_DGT_TL))
-            currentCamera->targetAngle += 8192;
-        else if (KEY_PRESS(pad.data, PER_DGT_TR))
-            currentCamera->targetAngle -= 8192;
-    }
+    if (KEY_PRESS(pad.data, PER_DGT_TL))
+        currentCamera->rotation = 1;
+    else if (KEY_PRESS(pad.data, PER_DGT_TR))
+        currentCamera->rotation = -1;
+    else
+        currentCamera->rotation = 0;
 
     currentPlayer->LAST_INPUTS=pad.data;
 }
